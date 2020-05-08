@@ -62,3 +62,5 @@ dotnet run
 ```sh
  curl -X POST -k https://localhost:5001/Elevator -H "Content-Type: application/json" -d "{ \"deviceName\": \"elevator1\", \"floor\": 17 }"
 ```
+
+https://www.youtube.com/watch?v=7K2IuqJKAPc
