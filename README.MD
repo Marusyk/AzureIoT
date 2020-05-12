@@ -2,7 +2,7 @@
 
 This repository contains all required scripts and source code to deploy iot hub sample infrastructure
 
-## Dependencies
+## Steps
 Before moving to infrustructure deployment and run of sample application please make sure that following conditions were met:
 
 1. Installed Azure CLI: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
