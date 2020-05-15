@@ -4,6 +4,7 @@ $hubname='iot-hub-research'
 $hub_sku='F1'
 $dps_name='iot-hub-dps-research'
 $vault_name='iot-pki'
+$cosmosDBAccountName='cosmos-db-research'
 
 echo "Create resource group: $rg_name..."
 az group create -n $rg_name -l $location
@@ -25,4 +26,8 @@ az iot dps linked-hub create --dps-name $dps_name `
      -g $rg_name --connection-string $hubConnectionString `
      -l $location
 
+echo "Create Cosmos DB: $cosmosDBAccountName..."
+az cosmosdb create -n $cosmosDBAccountName -g $rg_name
+
 az iot hub show-connection-string -n $hubname --policy-name service -o table
+az cosmosdb list-keys --name $cosmosDBAccountName --resource-group $rg_name
