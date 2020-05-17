@@ -31,18 +31,19 @@ namespace EdgeDevice.Simulator
             using DeviceClient deviceClient = DeviceClient.Create(registrationResult.AssignedHub, auth, TransportType.Mqtt);
 
             await deviceClient.SetMethodHandlerAsync(nameof(FloorCall), FloorCall, null);
-            await SendDeviceToCloudMessagesAsync(deviceClient);
+            await SendDeviceToCloudMessagesAsync(configuration.DeviceName, deviceClient);
             Console.ReadKey();
         }
 
-        private static async Task SendDeviceToCloudMessagesAsync(DeviceClient deviceClient)
+        private static async Task SendDeviceToCloudMessagesAsync(string deviceName, DeviceClient deviceClient)
         {
             while (true)
             {
                 // Create JSON message
                 var telemetryDataPoint = new
                 {
-                    floor = CurrentFloor
+                    floor = CurrentFloor,
+                    device = deviceName
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.UTF8.GetBytes(messageString));

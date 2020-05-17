@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EdgeDevice.Simulator", "EdgeDevice.Simulator\EdgeDevice.Simulator.csproj", "{9154F415-4EA9-4B78-AD2C-730C39F1230B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDevice.Simulator", "EdgeDevice.Simulator\EdgeDevice.Simulator.csproj", "{9154F415-4EA9-4B78-AD2C-730C39F1230B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificateAuthority.Function", "CertificateAuthority.Function\CertificateAuthority.Function.csproj", "{3EBED366-2E27-4A02-A16A-3BA66B513C67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertificateAuthority.Function", "CertificateAuthority.Function\CertificateAuthority.Function.csproj", "{3EBED366-2E27-4A02-A16A-3BA66B513C67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RootCertificate.Setup", "RootCertificate.Setup\RootCertificate.Setup.csproj", "{1699525E-9C7E-4B6E-9F15-1936E04FC550}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RootCertificate.Setup", "RootCertificate.Setup\RootCertificate.Setup.csproj", "{1699525E-9C7E-4B6E-9F15-1936E04FC550}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EdgeDevice.RequestCertificate", "EdgeDevice.RequestCertificate\EdgeDevice.RequestCertificate.csproj", "{1E09FFD6-E8F0-47E7-B9EF-555682FCEF3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDevice.RequestCertificate", "EdgeDevice.RequestCertificate\EdgeDevice.RequestCertificate.csproj", "{1E09FFD6-E8F0-47E7-B9EF-555682FCEF3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Api", "Elevator.Api\Elevator.Api.csproj", "{1A43DC23-5411-463E-9510-FDEE252C930D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Api", "Elevator.Api\Elevator.Api.csproj", "{1A43DC23-5411-463E-9510-FDEE252C930D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventHub.Consumer", "EventHub.Consumer\EventHub.Consumer.csproj", "{280C0955-867A-407C-8EFA-E35841DF86CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1A43DC23-5411-463E-9510-FDEE252C930D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A43DC23-5411-463E-9510-FDEE252C930D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A43DC23-5411-463E-9510-FDEE252C930D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{280C0955-867A-407C-8EFA-E35841DF86CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280C0955-867A-407C-8EFA-E35841DF86CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{280C0955-867A-407C-8EFA-E35841DF86CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{280C0955-867A-407C-8EFA-E35841DF86CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
