@@ -9,12 +9,13 @@ namespace EdgeDevice.RequestCertificate
     {
         private readonly string _clientId;
         private readonly string _tenantId;
-        private readonly string[] _scopes = { "https://certauthorityfunction.azurewebsites.net/user_impersonation" };
+        private readonly string[] _scopes;
 
-        public AuthenticationHelper(string clientId, string tenantId)
+        public AuthenticationHelper(string clientId, string tenantId, string functionBaseUrl)
         {
             _clientId = clientId;
             _tenantId = tenantId;
+            _scopes = new[] { $"{functionBaseUrl}/user_impersonation" };
         }
 
         public async Task<AuthenticationResult> AcquireTokenAsync()

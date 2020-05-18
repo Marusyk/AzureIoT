@@ -30,6 +30,7 @@ namespace EdgeDevice.RequestCertificate
 
             Console.WriteLine("Stored issued certificate in the certificate store:");
             Console.WriteLine(certificateWithPrivateKey);
+            Console.ReadKey();
         }
 
         private static void SetDefaultSerializerSettings()
@@ -51,10 +52,10 @@ namespace EdgeDevice.RequestCertificate
 
         private static async Task<string> GetAccessToken(Configuration configuration)
         {
-            var authHelper = new AuthenticationHelper(configuration.ClientId, configuration.TenantId);
+            var authHelper = new AuthenticationHelper(configuration.ClientId, configuration.TenantId, configuration.FunctionBaseUrl);
             var auth = await authHelper.AcquireTokenAsync();
 
-            using (var client = new HttpClient { BaseAddress = new Uri(configuration.BaseUrl) })
+            using (var client = new HttpClient { BaseAddress = new Uri(configuration.FunctionBaseUrl) })
             {
                 var httpContent = new StringContent(JsonConvert.SerializeObject(new { access_token = auth.AccessToken }), Encoding.UTF8, MediaTypeNames.Application.Json);
                 using (var responseMessage = await client.PostAsync(".auth/login/aad", httpContent))
@@ -87,7 +88,7 @@ namespace EdgeDevice.RequestCertificate
 
         private static async Task<X509Certificate2> IssueCertificate(string subjectName, RSAParameters publicParameters, Configuration configuration, string accessToken)
         {
-            using (var client = new HttpClient { BaseAddress = new Uri(configuration.BaseUrl) })
+            using (var client = new HttpClient { BaseAddress = new Uri(configuration.FunctionBaseUrl) })
             {
                 client.DefaultRequestHeaders.Add("X-ZUMO-AUTH", accessToken);
 

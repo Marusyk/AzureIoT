@@ -11,7 +11,7 @@ namespace CertificateAuthority.Function
         {
             var configuration = ReadConfiguration(functionAppDirectory);
             var serialNumberGenerator = new SerialNumberGenerator(configuration.StorageConnectionString, configuration.StorageContainerName);
-            return new CertificateIssuer(CreateKeyVaultClient(), configuration.RootCertificateId, serialNumberGenerator);
+            return new CertificateIssuer(CreateKeyVaultClient(), configuration.KeyVaultBaseUrl, configuration.RootCertificateId, serialNumberGenerator);
         }
 
         private static Configuration ReadConfiguration(string functionAppDirectory)

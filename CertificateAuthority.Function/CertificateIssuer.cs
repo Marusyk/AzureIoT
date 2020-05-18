@@ -12,20 +12,22 @@ namespace CertificateAuthority.Function
         private const string AuthorityIdExtensionOid = "2.5.29.35";
 
         private readonly KeyVaultClient _keyVaultClient;
+        private readonly string _keyVaultBaseUrl;
         private readonly string _rootCertificateId;
         private readonly SerialNumberGenerator _serialNumberGenerator;
 
-        public CertificateIssuer(KeyVaultClient keyVaultClient, string rootCertificateId, SerialNumberGenerator serialNumberGenerator)
+        public CertificateIssuer(KeyVaultClient keyVaultClient, string keyVaultBaseUrl, string rootCertificateId, SerialNumberGenerator serialNumberGenerator)
         {
             _keyVaultClient = keyVaultClient;
+            _keyVaultBaseUrl = keyVaultBaseUrl;
             _rootCertificateId = rootCertificateId;
             _serialNumberGenerator = serialNumberGenerator;
         }
 
         public async Task<X509Certificate2> IssueCertificateAsync(string subjectName, RSAPublicKeyParameters publicKey)
         {
-            var certificateBundle = await _keyVaultClient.GetCertificateAsync(_rootCertificateId);
-            //var certificateBundle = await _keyVaultClient.GetCertificateAsync("https://iot-pki.vault.azure.net/", _rootCertificateId);
+            //var certificateBundle = await _keyVaultClient.GetCertificateAsync(_rootCertificateId);
+            var certificateBundle = await _keyVaultClient.GetCertificateAsync(_keyVaultBaseUrl, _rootCertificateId);
             using var issuerCertificate = new X509Certificate2(certificateBundle.Cer);
 
             using RSA certificateKey = CreateCertificateKey(publicKey);

@@ -16,12 +16,12 @@ namespace CertificateAuthority.Function
         [FunctionName("IssueCertificate")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "issueCertificate")]
-            HttpRequest req, ILogger log)
+            HttpRequest request, ILogger logger)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var certificateIssuer = CertificateFunctionHelper.CreateCertificateIssuer(Environment.CurrentDirectory);
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
 
             var (subjectName, publicKey) = ExtractData(requestBody);
             var certificate = await certificateIssuer.IssueCertificateAsync(subjectName, publicKey);
