@@ -47,6 +47,7 @@ namespace EdgeDevice.Simulator
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.UTF8.GetBytes(messageString));
+                message.To = "states";
 
                 // Send the telemetry message
                 await deviceClient.SendEventAsync(message);

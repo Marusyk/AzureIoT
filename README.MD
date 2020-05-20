@@ -62,3 +62,8 @@ dotnet run
 ```sh
  curl -X POST -k https://localhost:5001/Elevator -H "Content-Type: application/json" -d "{ \"deviceName\": \"elevator1\", \"floor\": 17 }"
 ```
+# Add EventHub/Servie Bus consumers
+Create custom consumers to store events from IoT hub to database
+1. Create custom routes https://docs.microsoft.com/en-us/azure/iot-hub/tutorial-routing
+2. Subscribe for IoT Events in portal.
+
