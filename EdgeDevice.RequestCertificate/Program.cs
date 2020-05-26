@@ -18,12 +18,11 @@ namespace EdgeDevice.RequestCertificate
         {
             SetDefaultSerializerSettings();
             var configuration = ReadConfiguration();
-            var accessToken = await GetAccessToken(configuration);
             var subjectName = ReadAndConfirmSubjectName(configuration);
 
             var key = RSA.Create();
             var publicParameters = key.ExportParameters(false);
-            var certificate = await IssueCertificate(subjectName, publicParameters, configuration, accessToken);
+            var certificate = await IssueCertificate(subjectName, publicParameters, configuration);
             await WriteToFileAsync(certificate, "IssuedCertificate.cer");
             var certificateWithPrivateKey = CreateCertificateWithPrivateKey(certificate, key);
             StoreCertificateInUserStore(certificateWithPrivateKey);
@@ -50,24 +49,6 @@ namespace EdgeDevice.RequestCertificate
             return configuration;
         }
 
-        private static async Task<string> GetAccessToken(Configuration configuration)
-        {
-            var authHelper = new AuthenticationHelper(configuration.ClientId, configuration.TenantId, configuration.FunctionBaseUrl);
-            var auth = await authHelper.AcquireTokenAsync();
-
-            using (var client = new HttpClient { BaseAddress = new Uri(configuration.FunctionBaseUrl) })
-            {
-                var httpContent = new StringContent(JsonConvert.SerializeObject(new { access_token = auth.AccessToken }), Encoding.UTF8, MediaTypeNames.Application.Json);
-                using (var responseMessage = await client.PostAsync(".auth/login/aad", httpContent))
-                {
-                    responseMessage.EnsureSuccessStatusCode();
-                    var serializedResponse = await responseMessage.Content.ReadAsStringAsync();
-                    dynamic response = JsonConvert.DeserializeObject<dynamic>(serializedResponse);
-                    return response.authenticationToken;
-                }
-            }
-        }
-
         private static string ReadAndConfirmSubjectName(Configuration configuration)
         {
             Console.Write($"The device name is '{configuration.DeviceName}'. Please confirm (Y/n): ");
@@ -86,12 +67,10 @@ namespace EdgeDevice.RequestCertificate
             }
         }
 
-        private static async Task<X509Certificate2> IssueCertificate(string subjectName, RSAParameters publicParameters, Configuration configuration, string accessToken)
+        private static async Task<X509Certificate2> IssueCertificate(string subjectName, RSAParameters publicParameters, Configuration configuration)
         {
             using (var client = new HttpClient { BaseAddress = new Uri(configuration.FunctionBaseUrl) })
             {
-                client.DefaultRequestHeaders.Add("X-ZUMO-AUTH", accessToken);
-
                 var request = new IssueCertificateRequest(subjectName, publicParameters);
                 var httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeNames.Application.Json);
 
