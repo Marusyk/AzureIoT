@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.Devices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Server.SignalR.Hubs;
 
-namespace Elevator.Api
+namespace Server.SignalR
 {
     public class Startup
     {
@@ -18,15 +18,15 @@ namespace Elevator.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(s => ServiceClient.CreateFromConnectionString(Configuration.GetConnectionString("IoTHub"), TransportType.Amqp));
-            services.AddRouting(option =>
-            {
-                option.LowercaseUrls = true;
-                option.LowercaseQueryStrings = false;
-            });
             services.AddControllers();
+            services.AddSingleton<INotificationManager, NotificationManager>();
+
+            services
+                .AddSignalR()
+                .AddAzureSignalR("");
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -43,6 +43,7 @@ namespace Elevator.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<TouchlessHub>("/touchless");
             });
         }
     }
