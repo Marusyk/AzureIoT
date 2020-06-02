@@ -30,9 +30,53 @@ namespace EdgeDevice.Simulator
             var auth = new DeviceAuthenticationWithX509Certificate(registrationResult.DeviceId, security.GetAuthenticationCertificate());
             using DeviceClient deviceClient = DeviceClient.Create(registrationResult.AssignedHub, auth, TransportType.Mqtt);
 
-            await deviceClient.SetMethodHandlerAsync(nameof(FloorCall), FloorCall, null);
-            await SendDeviceToCloudMessagesAsync(configuration.DeviceName, deviceClient);
+            await deviceClient.SetMethodHandlerAsync(nameof(DestinationCall), DestinationCall, null);
+            await SendDeviceStateMessages(configuration.DeviceName, deviceClient);
+
+            //ReceiveC2dAsync(deviceClient);
             Console.ReadKey();
+        }
+
+        private static async Task SendDeviceStateMessages(string deviceName, DeviceClient deviceClient)
+        {
+            while (true)
+            {
+                // Create JSON message
+                //var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
+                var messageString = "{\"EquipmentNumber\":\"elevator11\",\"CabinPosition\":1,\"healthState\":\"Ok\",\"GenericState\":\"N\",\"Floors\":[{\"Number\":1,\"Label\":\"1\"},{\"Number\":2,\"Label\":\"2\"}],\"direction\":\"Down\"}";
+                var message = new Message(Encoding.UTF8.GetBytes(messageString));
+                Console.WriteLine("Send to Cloud :" + messageString);
+                await deviceClient.SendEventAsync(message);
+                await Task.Delay(20 * 1000);
+            }
+        }
+
+        private static Task<MethodResponse> DestinationCall(MethodRequest methodRequest, object userContext)
+        {
+            string data = Encoding.UTF8.GetString(methodRequest.Data);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Message from Cloud: " + data);
+            Console.ResetColor();
+            return Task.FromResult(new MethodResponse(Encoding.UTF8.GetBytes("Ok"), 200));
+        }
+
+        #region Hide
+
+        private static async void ReceiveC2dAsync(DeviceClient deviceClient)
+        {
+            Console.WriteLine("\nReceiving cloud to device messages from service");
+            while (true)
+            {
+                Message receivedMessage = await deviceClient.ReceiveAsync();
+                if (receivedMessage == null) continue;
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Received message: {0}",
+                Encoding.UTF8.GetString(receivedMessage.GetBytes()));
+                Console.ResetColor();
+
+                await deviceClient.CompleteAsync(receivedMessage);
+            }
         }
 
         private static async Task SendDeviceToCloudMessagesAsync(string deviceName, DeviceClient deviceClient)
@@ -43,17 +87,16 @@ namespace EdgeDevice.Simulator
                 var telemetryDataPoint = new
                 {
                     floor = CurrentFloor,
-                    device = deviceName
+                    EquipmentNumber = deviceName
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.UTF8.GetBytes(messageString));
-                message.To = "states";
 
                 // Send the telemetry message
                 await deviceClient.SendEventAsync(message);
                 Console.WriteLine("{0} > Current floow: {1}", DateTime.Now, messageString);
 
-                await Task.Delay(5 * 1000);
+                await Task.Delay(10 * 1000);
             }
         }
 
@@ -123,5 +166,7 @@ namespace EdgeDevice.Simulator
                 throw new Exception("IoT Hub not assigned!");
             return registrationResult;
         }
+
+        #endregion
     }
 }
